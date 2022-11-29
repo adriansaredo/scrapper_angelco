@@ -1,0 +1,2 @@
+docker build -t scraperangelco .
+docker run -it -v /c/python/scraper_angelco:/app scraperangelco main.py
