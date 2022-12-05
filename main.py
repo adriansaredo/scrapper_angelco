@@ -27,8 +27,10 @@ def find_between_r( s, first, last ):
         return ""
 
 origen = "Angel-Scrapped7days.xlsx"
+#destino = "Angel-Scrapped7days_fix.xlsx"
 destino = "Angel-Scrapped7days_fix.xlsx"
 #https://analisisydecision.es/leer-archivos-excel-con-python/
+#https://www.analyticslane.com/2018/07/30/guardar-y-leer-archivos-excel-en-python/
 #wb = xlrd.open_workbook(origen) 
 
 #hoja = wb.sheet_by_index(0) 
@@ -56,34 +58,39 @@ df = pd.DataFrame(filas)
 df.head()
 #print(df)
 for index, row in df.iterrows():
-    time.sleep(5)
-    opener = urllib.request.build_opener()
-    #opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36'), ('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'), ('Accept-Encoding','gzip, deflate, br'),\
-    #    ('Accept-Language','en-US,en;q=0.5' ), ("Connection", "keep-alive"), ("Upgrade-Insecure-Requests",'1')]
-    opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'), ('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'), \
-        ('Accept-Language','en-US,en;q=0.5' ), ("Connection", "keep-alive"), ("Upgrade-Insecure-Requests",'1')]
-    #opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1'), ('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'), \
-    #    ('Accept-Language','en-US,en;q=0.5' ), ("Connection", "keep-alive"), ("Upgrade-Insecure-Requests",'1')]
-    urllib.request.install_opener(opener)
-    error = 0
-    try:
-        page = urllib2.urlopen(row[0])
-    except urllib2.URLError as err:
-        print (err.code)
-        #print (err.read())
-        error = 1
-    if (error == 0 ):
-        soup = BeautifulSoup(page)
-        x = soup.__str__()
-        website = find_between( x, 'styles_links__VvYv7"><ul><li class="styles_websiteLink___Rnfc"><a href="', '" rel="nofollow ugc" target="_blank">' )
-        print('primera')
-        print (website)
-        row[2] = website
+    if str(row[2]).strip(): 
+        print('Linea ya procesada: ' + str(row[0]) + ' : '+ str(row[1]) + ' : '+ str(row[2]))
     else:
-        break
-        #row[2] = 'Error'
-#print(df)
-df.to_excel(destino, "Sheet1")
+        time.sleep(5)
+        opener = urllib.request.build_opener()
+        opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'), ('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'), \
+            ('Accept-Language','en-US,en;q=0.5' ), ("Connection", "keep-alive"), ("Upgrade-Insecure-Requests",'1')]
+        urllib.request.install_opener(opener)
+        error = 0
+        try:
+            page = urllib2.urlopen(row[0])
+        except urllib2.URLError as err:
+            print (err.code)
+            #print (err.read())
+            error = 1
+        if (error == 0 ):
+            soup = BeautifulSoup(page)
+            x = soup.__str__()
+            website = find_between( x, 'styles_links__VvYv7"><ul><li class="styles_websiteLink___Rnfc"><a href="', '" rel="nofollow ugc" target="_blank">' )
+            print('primera')
+            print (website)
+            row[2] = website
+            df.to_excel(destino, "Sheet1", index=False)
+        else:
+            break
+            #row[2] = 'Error'
+        
+
+print('df')
+#df = df.drop(df.columns[[0]], axis='columns')
+df.to_excel(origen, sheet_name="Sheet1", index=False)
+
+
 
 
 
