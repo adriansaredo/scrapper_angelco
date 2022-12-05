@@ -61,7 +61,7 @@ for index, row in df.iterrows():
     if str(row[2]).strip(): 
         print('Linea ya procesada: ' + str(row[0]) + ' : '+ str(row[1]) + ' : '+ str(row[2]))
     else:
-        time.sleep(5)
+        time.sleep(60)
         opener = urllib.request.build_opener()
         opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'), ('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'), \
             ('Accept-Language','en-US,en;q=0.5' ), ("Connection", "keep-alive"), ("Upgrade-Insecure-Requests",'1')]
