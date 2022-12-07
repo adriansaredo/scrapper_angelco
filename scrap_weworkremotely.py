@@ -27,6 +27,7 @@ def find_between_r( s, first, last ):
         return ""
 
 origen = "weworkremotelytotal.xlsx"
+destino = "weworkremotelytotalfix.xlsx"
 
 wb = xlrd.open_workbook(origen) 
 
@@ -48,31 +49,33 @@ for index, row in df.iterrows():
     if str(row[2]).strip(): 
         print('Linea ya procesada: ' + str(row[0]) + ' : '+ str(row[1]) + ' : '+ str(row[2]))
     else:
-        time.sleep(5)
+        time.sleep(20)
         opener = urllib.request.build_opener()
         opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'), ('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'), \
             ('Accept-Language','en-US,en;q=0.5' ), ("Connection", "keep-alive"), ("Upgrade-Insecure-Requests",'1')]
         urllib.request.install_opener(opener)
         error = 0
         try:
-            print(row[0])
+            #print(row[0])
             page = urllib2.urlopen(row[0])
         except urllib2.URLError as err:
             print (err.code)
             #print (err.read())
             error = 1
-        print(error)
+        #print(error)
         if (error == 0 ):
             soup = BeautifulSoup(page)
             #print(soup.encode('utf-8'))
             x = soup.__str__()
             #print(x.encode('utf-8'))
             website = find_between( str(x.encode('utf-8')), '</div><div style="margin-top: -38px;"><h3><a href="', '" target="_blank">Website</a></h3></div><div>' )
+            if (website == "" ):
+                website = find_between( str(x.encode('utf-8')), '</div><div style="margin-top: -38px;"><h3><a target=_blank href="', '">Website</a></h3></div><div>' )
             #print('primera')
             print (website)
             row[2] = website
             #break
-            #df.to_excel(destino, "Sheet1", index=False)
+            df.to_excel(destino, "Sheet1", index=False)
         else:
             break
             #row[2] = 'Error'
